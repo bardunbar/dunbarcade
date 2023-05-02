@@ -1,0 +1,56 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "cargo new lib",
+            "type": "shell",
+            "command": "cargo new --lib --vcs none crates/${input:crate_name}",
+            "problemMatcher": []
+        },
+        // {
+        //     "label": "publish",
+        //     "type": "shell",
+        //     "command": "butler push target\\wasm32-unknown-unknown\\release\\release.zip dunbargames/propinquity-2022:html5",
+        //     "dependsOrder": "sequence",
+        //     "dependsOn": [
+        //         "package assets - release"
+        //     ]
+        // },
+        {
+            "label": "package assets - debug",
+            "type": "shell",
+            "command": ".\\tools\\package.bat debug",
+            "dependsOn": [
+                "web_build - debug"
+            ]
+        },
+        {
+            "label": "package assets - release",
+            "type": "shell",
+            "command": ".\\tools\\package.bat release",
+            "dependsOn": [
+                "web_build - release"
+            ]
+        },
+        {
+            "label": "web_build - debug",
+            "type": "shell",
+            "command": "cargo build --target wasm32-unknown-unknown"
+        },
+        {
+            "label": "web_build - release",
+            "type": "shell",
+            "command": "cargo build -r --target wasm32-unknown-unknown"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "crate_name",
+            "description": "Crate name:",
+            "default": "",
+            "type": "promptString"
+        }
+    ]
+}
