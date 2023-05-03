@@ -1,5 +1,3 @@
-// use macroquad::prelude::*;
-
 use macroquad::{
     prelude::{
         Camera2D,
@@ -31,6 +29,9 @@ impl CameraLayer {
         render_target.texture.set_filter(FilterMode::Nearest);
         camera.render_target = Some(render_target);
 
+        // Offset the camera so that the target is in the center of the viewport
+        camera.offset = Vec2::new(1.0, 1.0);
+
         // Flip Vertically? Apparently fixes a bug
         camera.zoom.y = -camera.zoom.y;
 
@@ -46,7 +47,7 @@ impl CameraLayer {
     }
 
     pub fn set_pos(&mut self, pos: Vec2) {
-        self.camera.offset = pos;
+        self.camera.target = pos;
     }
 
     pub fn draw(&self) {
@@ -90,7 +91,7 @@ impl CameraLayer {
 
     #[inline]
     pub fn get_pos(&self) -> Vec2 {
-        self.camera.offset
+        self.camera.target
     }
 
     pub fn get_size(&self, target_width: f32, target_height: f32) -> Vec2 {

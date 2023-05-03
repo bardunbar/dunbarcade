@@ -31,4 +31,4 @@ IF %ERRORLEVEL% EQU 0 GOTO Package
 GOTO RobocopyError
 
 :Package
-7z a -tzip "%outputdir%\%1.zip" ".\%outputdir%\propinquity.wasm" ".\%outputdir%\index.html" ".\%outputdir%\assets"
+7z a -tzip "%outputdir%\%1.zip" ".\%outputdir%\arcade.wasm" ".\%outputdir%\index.html" ".\%outputdir%\assets"

@@ -9,15 +9,15 @@
             "command": "cargo new --lib --vcs none crates/${input:crate_name}",
             "problemMatcher": []
         },
-        // {
-        //     "label": "publish",
-        //     "type": "shell",
-        //     "command": "butler push target\\wasm32-unknown-unknown\\release\\release.zip dunbargames/propinquity-2022:html5",
-        //     "dependsOrder": "sequence",
-        //     "dependsOn": [
-        //         "package assets - release"
-        //     ]
-        // },
+        {
+            "label": "publish",
+            "type": "shell",
+            "command": "butler push target\\wasm32-unknown-unknown\\release\\release.zip dunbargames/dunbarcade:html5",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "package assets - release"
+            ]
+        },
         {
             "label": "package assets - debug",
             "type": "shell",
