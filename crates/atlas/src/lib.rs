@@ -112,12 +112,15 @@ impl TextureAtlas {
         }
     }
 
-    pub fn draw_texture(&self, texture: &str, x: f32, y: f32, color: Color) {
+    pub fn draw_texture(&self, texture: &str, x: f32, y: f32, rotation: f32, color: Color) {
         if let Some(frame_data) = self.frames.get(texture) {
             draw_texture_ex(self.texture, x, y, color, DrawTextureParams {
                 source: Some(Rect {x: frame_data.x, y: frame_data.y, w: frame_data.w, h: frame_data.h } ),
+                rotation,
                 ..Default::default()
             })
         }
     }
+
+    // pub fn draw_texture_ex(&self, )
 }

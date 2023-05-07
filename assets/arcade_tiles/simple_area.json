@@ -1,0 +1,54 @@
+{
+    "tiles" : [
+        {
+            "id": "Carpet",
+            "texture_id": "arcade_basic_carpet.png",
+            "edge_ids": ["carpet", "carpet", "carpet", "carpet"],
+            "can_rotate": false
+        },
+        {
+            "id": "Path_Straight",
+            "texture_id": "arcade_basic_floor_straight.png",
+            "edge_ids": ["path_closed", "path_open", "path_closed", "path_open"],
+            "can_rotate": true
+        },
+        {
+            "id": "Path_Corner",
+            "texture_id": "arcade_basic_floor_corner.png",
+            "edge_ids": ["path_closed", "path_open", "path_open", "path_closed"],
+            "can_rotate": true
+        },
+        {
+            "id": "Path_T",
+            "texture_id": "arcade_basic_floor_t.png",
+            "edge_ids": ["path_closed", "path_open", "path_open", "path_open"],
+            "can_rotate": true
+        },
+        {
+            "id": "Path_Cross",
+            "texture_id": "arcade_basic_floor_cross.png",
+            "edge_ids": ["path_open", "path_open", "path_open", "path_open"],
+            "can_rotate": false
+        }
+    ],
+
+    "rules" : [
+        ["carpet", "path_closed"],
+        ["path_closed", "path_closed"],
+        ["carpet", "carpet"],
+        ["path_open", "path_open"]
+    ],
+
+    "weights" : [
+        ["Carpet", 1],
+        ["Path_Straight", 1],
+        ["Path_Corner", 1],
+        ["Path_T", 1],
+        ["Path_Cross", 1]
+    ]
+
+}
+
+
+
+
