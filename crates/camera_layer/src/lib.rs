@@ -25,6 +25,7 @@ pub struct CameraLayer {
 impl CameraLayer {
     pub fn new(width: f32, height: f32) -> Self {
         let mut camera = Camera2D::from_display_rect(Rect::new(0.0, 0.0, width, height));
+
         let render_target = render_target(width as u32, height as u32);
         render_target.texture.set_filter(FilterMode::Nearest);
         camera.render_target = Some(render_target);

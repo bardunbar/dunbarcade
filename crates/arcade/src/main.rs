@@ -1,13 +1,16 @@
+mod player;
+
 use arcade::{TileSet, Arcade};
 use atlas::TextureAtlas;
 use camera_layer::CameraLayer;
+use player::Player;
 use macroquad::{window::{Conf, next_frame, clear_background}, prelude::{is_quit_requested, set_default_camera, set_camera, is_key_down, KeyCode, Vec2, BLACK}};
 
 const WIDTH: i32 = 640;
 const HEIGHT: i32 = 360;
 
 #[cfg(debug_assertions)]
-const DEBUG_SCREEN_SCALE: i32 = 2;
+const DEBUG_SCREEN_SCALE: i32 = 3;
 #[cfg(not(debug_assertions))]
 const DEBUG_SCREEN_SCALE: i32 = 1;
 
@@ -37,31 +40,32 @@ async fn main() {
 
     let arcade = Arcade::new();
 
-    println!("Camera pos is: {}", camera_layer.get_pos());
     camera_layer.translate(8.0 * 32.0, 8.0 * 32.0);
+
+    let mut player = Player::new().await;
+
+    player.position = Vec2::new(8.0 * 32.0, 8.0 * 32.0);
 
     loop {
 
-        let mut camera_movement = Vec2::ZERO;
-        const SPEED: f32 = 1.0;
+        player.update();
 
-        if is_key_down(KeyCode::A) || is_key_down(KeyCode::Left) {
-            camera_movement.x -= SPEED;
-        }
+        // Screen poss uses the full screen position, not the dimensions of the camera layer, should make a new function on camera layer for a better effect
+        // let player_screen_pos = camera_layer.camera.world_to_screen(player.position);
+        // let safe_min = Vec2::new(96.0, 96.0);
+        // let safe_max = Vec2::new(WIDTH as f32 - 96.0, HEIGHT as f32 - 96.0);
 
-        if is_key_down(KeyCode::D) || is_key_down(KeyCode::Right) {
-            camera_movement.x += SPEED;
-        }
+        // if is_key_pressed(KeyCode::X) {
+        //     println!("Current Screen Pos: {}", player_screen_pos);
+        // }
 
-        if is_key_down(KeyCode::W) || is_key_down(KeyCode::Up) {
-            camera_movement.y -= SPEED;
-        }
-
-        if is_key_down(KeyCode::S) || is_key_down(KeyCode::Down) {
-            camera_movement.y += SPEED;
-        }
-
-        camera_layer.translate(camera_movement.x, camera_movement.y);
+        // let player_min_delta = player_screen_pos - safe_min;
+        // if player_min_delta.x < 0.0 {
+        //     camera_layer.translate(player_min_delta.x, 0.0);
+        // }
+        // if player_min_delta.y < 0.0 {
+        //     camera_layer.translate(0.0, player_min_delta.y);
+        // }
 
         set_camera(&camera_layer.camera);
 
@@ -74,6 +78,8 @@ async fn main() {
                 }
             }
         }
+
+        player.draw();
 
         set_default_camera();
 

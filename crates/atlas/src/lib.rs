@@ -11,8 +11,8 @@ use macroquad::{
     prelude::{
         load_string,
         Color,
-        Rect
-    }
+        Rect, Vec2
+    },
 };
 
 #[derive(DeJson, Clone, Copy)]
@@ -69,6 +69,36 @@ pub struct TextureAtlas {
     frames: HashMap<String, FrameRect>
 }
 
+#[derive(Debug, Clone)]
+pub struct AtlasTextureParams {
+    /// Rotation in radians
+    pub rotation: f32,
+
+    /// Mirror on the X axis
+    pub flip_x: bool,
+
+    /// Mirror on the Y axis
+    pub flip_y: bool,
+
+    /// Rotate around this point.
+    /// When `None`, rotate around the texture's center.
+    /// When `Some`, the coordinates are in screen-space.
+    /// E.g. pivot (0,0) rotates around the top left corner of the screen, not of the
+    /// texture.
+    pub pivot: Option<Vec2>,
+}
+
+impl Default for AtlasTextureParams {
+    fn default() -> AtlasTextureParams {
+        AtlasTextureParams {
+            rotation: 0.,
+            pivot: None,
+            flip_x: false,
+            flip_y: false,
+        }
+    }
+}
+
 impl TextureAtlas {
     pub async fn from_data(data_path: &str, texture_path: Option<&str>) -> Result<Self, String> {
         if let Ok(contents) = load_string(data_path).await {
@@ -92,6 +122,9 @@ impl TextureAtlas {
                     for frame in atlas.frames.iter() {
                         frames.insert(frame.filename.as_ref().unwrap().to_owned(), frame.frame.clone());
                     }
+
+                    // Set the filter mode to be nearest for pixel perfection!
+                    texture.set_filter(macroquad::texture::FilterMode::Nearest);
 
                     Ok(TextureAtlas {
                         data: atlas,
@@ -122,5 +155,16 @@ impl TextureAtlas {
         }
     }
 
-    // pub fn draw_texture_ex(&self, )
+    pub fn draw_texture_params(&self, texture: &str, x: f32, y: f32, color: Color, params: AtlasTextureParams) {
+        if let Some(frame_data) = self.frames.get(texture) {
+            draw_texture_ex(self.texture, x, y, color, DrawTextureParams {
+                source: Some(Rect {x: frame_data.x, y: frame_data.y, w: frame_data.w, h: frame_data.h } ),
+                rotation: params.rotation,
+                flip_x: params.flip_x,
+                flip_y: params.flip_y,
+                pivot: params.pivot,
+                ..Default::default()
+            })
+        }
+    }
 }
