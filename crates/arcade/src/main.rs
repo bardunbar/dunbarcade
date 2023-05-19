@@ -50,22 +50,19 @@ async fn main() {
 
         player.update();
 
-        // Screen poss uses the full screen position, not the dimensions of the camera layer, should make a new function on camera layer for a better effect
-        // let player_screen_pos = camera_layer.camera.world_to_screen(player.position);
-        // let safe_min = Vec2::new(96.0, 96.0);
-        // let safe_max = Vec2::new(WIDTH as f32 - 96.0, HEIGHT as f32 - 96.0);
+        let player_screen_pos = camera_layer.world_to_screen(player.position);
+        let safe_min = Vec2::new(192.0 / WIDTH as f32 * WINDOW_WIDTH as f32, 128.0 / HEIGHT as f32 * WINDOW_HEIGHT as f32);
+        let safe_max = Vec2::new(WINDOW_WIDTH as f32, WINDOW_HEIGHT as f32) - safe_min;
 
-        // if is_key_pressed(KeyCode::X) {
-        //     println!("Current Screen Pos: {}", player_screen_pos);
-        // }
+        let player_min_delta = player_screen_pos - safe_min;
+        let player_max_delta = player_screen_pos - safe_max;
 
-        // let player_min_delta = player_screen_pos - safe_min;
-        // if player_min_delta.x < 0.0 {
-        //     camera_layer.translate(player_min_delta.x, 0.0);
-        // }
-        // if player_min_delta.y < 0.0 {
-        //     camera_layer.translate(0.0, player_min_delta.y);
-        // }
+        if player_min_delta.x < 0.0 || player_max_delta.x > 0.0 {
+            camera_layer.translate(player.velocity.x, 0.);
+        }
+        if player_min_delta.y < 0.0 || player_max_delta.y > 0.0 {
+            camera_layer.translate(0., player.velocity.y);
+        }
 
         set_camera(&camera_layer.camera);
 

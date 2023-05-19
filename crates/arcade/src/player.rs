@@ -28,6 +28,7 @@ pub struct Player {
     move_speed: f32, // Pixels per second
 
     pub position: Vec2,
+    pub velocity: Vec2,
 }
 
 impl Player {
@@ -99,6 +100,7 @@ impl Player {
             frame_counter: 0.0,
             move_speed: 96.0, // Pixels per second
             position: Vec2::new(0.0, 0.0),
+            velocity: Vec2::new(0.0, 0.0),
         }
     }
 
@@ -127,7 +129,7 @@ impl Player {
         move_dir = move_dir.normalize_or_zero();
 
         move_dir *= self.move_speed * frame_time;
-
+        self.velocity = move_dir;
 
         let target_anim_state = match (move_dir.x, move_dir.y) {
             (x, y) if x > 0.0 && y >= 0.0 => {PlayerAnimation::MoveDownRight},

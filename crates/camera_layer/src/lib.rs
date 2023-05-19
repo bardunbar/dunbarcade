@@ -75,6 +75,10 @@ impl CameraLayer {
         self.camera.screen_to_world(point)
     }
 
+    pub fn world_to_screen(&self, point: Vec2) -> Vec2 {
+        self.camera.world_to_screen(point)
+    }
+
     #[inline]
     pub fn get_width(&self) -> f32 {
         self.get_texture().width()
