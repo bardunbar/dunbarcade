@@ -1,5 +1,5 @@
 [package]
-name = "arcade"
+name = "wfc"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,7 +7,4 @@ edition = "2021"
 
 [dependencies]
 macroquad = "0.3.25"
-atlas = { path = "../atlas" }
-utilities = { path = "../utilities" }
-camera_layer = { path = "../camera_layer" }
-wfc = { path = "../wfc" }
+nanoserde = "0.1.32"

@@ -141,7 +141,14 @@ impl Player {
                 }
             },
             (x, y) if x < 0.0 && y >= 0.0 => {PlayerAnimation::MoveDownLeft},
-            (x, y) if x >= 0.0 && y < 0.0 => {PlayerAnimation::MoveUpRight},
+            (x, y) if x > 0.0 && y < 0.0 => {PlayerAnimation::MoveUpRight},
+            (x, y) if x == 0.0 && y < 0.0 => {
+                if self.animation == PlayerAnimation::MoveUpLeft {
+                    PlayerAnimation::MoveUpLeft
+                } else {
+                    PlayerAnimation::MoveUpRight
+                }
+            },
             (x, y) if x <= 0.0 && y < 0.0 => {PlayerAnimation::MoveUpLeft},
             _ => {
                 match self.animation {

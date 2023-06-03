@@ -1,10 +1,13 @@
 mod player;
+mod cabinet;
 
 use arcade::{TileSet, Arcade};
 use atlas::TextureAtlas;
 use camera_layer::CameraLayer;
 use player::Player;
-use macroquad::{window::{Conf, next_frame, clear_background}, prelude::{is_quit_requested, set_default_camera, set_camera, is_key_down, KeyCode, Vec2, BLACK}};
+use wfc::tileset::{TilesetData, WaveFunctionTileset};
+
+use macroquad::{window::{Conf, next_frame, clear_background}, prelude::{is_quit_requested, set_default_camera, set_camera, is_key_down, KeyCode, Vec2, BLACK}, audio::{load_sound, play_sound, PlaySoundParams}};
 
 const WIDTH: i32 = 640;
 const HEIGHT: i32 = 360;
@@ -37,6 +40,15 @@ async fn main() {
     let atlas = TextureAtlas::from_data("assets/atlas/arcade_basic.json", Some("assets/atlas/arcade_basic.png")).await.unwrap();
 
     let tile_set = TileSet::from_basic(atlas, Vec2::new(32.0, 32.0));
+
+    let music = load_sound("assets/audio/music/secret_of_tiki_island.ogg").await.unwrap();
+    play_sound(music, PlaySoundParams {
+        looped: true,
+        volume: 1.0,
+    });
+
+    let wfc_tileset_data = TilesetData::from_data("assets/arcade_tiles/simple_area.json").await.unwrap();
+    let wfc_tileset = WaveFunctionTileset::new(wfc_tileset_data);
 
     let arcade = Arcade::new();
 
