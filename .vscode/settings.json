@@ -1,5 +1,8 @@
 {
     "cSpell.ignoreWords": [
         "smartupdate"
+    ],
+    "rust-analyzer.linkedProjects": [
+        ".\\crates\\wfc\\Cargo.toml"
     ]
 }

@@ -66,6 +66,7 @@ pub struct WaveFunctionTile {
     edge_ids: [WaveFunctionEdgeHandle; 4],
     texture_id: WaveFunctionTextureHandle,
     rotation: u32,
+    class_id: WaveFunctionTileClassHandle,
 }
 
 pub struct WaveFunctionTileset {
@@ -77,6 +78,7 @@ pub struct WaveFunctionTileset {
     rules: Vec<WaveFunctionRule>,
     weights: Vec<WaveFunctionWeight>,
 
+    high_entropy_cache: HashSet<WaveFunctionTileHandle>,
     validity_cache: [HashMap<WaveFunctionEdgeHandle, HashSet<WaveFunctionTileHandle>>; 4],
 }
 
@@ -90,6 +92,7 @@ impl WaveFunctionTileset {
             tiles: Vec::new(),
             rules: Vec::new(),
             weights: Vec::new(),
+            high_entropy_cache: HashSet::new(),
             validity_cache: [
                 HashMap::new(),
                 HashMap::new(),
@@ -137,6 +140,7 @@ impl WaveFunctionTileset {
                 edge_ids: edges,
                 texture_id: WaveFunctionTextureHandle(texture_id),
                 rotation: 0,
+                class_id: WaveFunctionTileClassHandle(tile_id),
             };
 
             if tile_data.can_rotate {
@@ -154,6 +158,11 @@ impl WaveFunctionTileset {
             tileset.tiles.push(wf_tile);
         }
 
+        // Populate the high entropy cache to simplify the creation of high entropy cells
+        for (handle, _) in tileset.tiles.iter().enumerate() {
+            tileset.high_entropy_cache.insert(WaveFunctionTileHandle(handle));
+        }
+
         // Process the rules
         for rule in tileset_data.rules.into_iter() {
             if let Some(leading_edge) = tileset.get_edge_handle(&rule.0) {
@@ -165,8 +174,8 @@ impl WaveFunctionTileset {
 
         // Process the weights
         for weight in tileset_data.weights.into_iter() {
-            if let Some(tile_handle) = tileset.get_tile_handle(&weight.0) {
-                tileset.weights.push(WaveFunctionWeight(tile_handle, weight.1));
+            if let Some(class_handle) = tileset.get_tile_class_handle(&weight.0) {
+                tileset.weights.push(WaveFunctionWeight(class_handle, weight.1));
             }
         }
 
@@ -264,7 +273,7 @@ impl WaveFunctionTileset {
         }
     }
 
-    pub fn get_tile_handle(&self, tile_id: &String) -> Option<WaveFunctionTileClassHandle> {
+    pub fn get_tile_class_handle(&self, tile_id: &String) -> Option<WaveFunctionTileClassHandle> {
         if let Some(found) = self.tile_id_map.iter().position(|id| id == tile_id) {
             Some(WaveFunctionTileClassHandle(found))
         } else {
@@ -272,11 +281,23 @@ impl WaveFunctionTileset {
         }
     }
 
+    pub fn get_high_entropy_cache_clone(&self) -> HashSet<WaveFunctionTileHandle> {
+        self.high_entropy_cache.clone()
+    }
 
+    pub fn get_weight(&self, class_handle: &WaveFunctionTileClassHandle) -> f32 {
+        match self.weights.iter().find(|&weight| weight.0 == *class_handle) {
+            Some(found) => found.1,
+            None => 0.0
+        }
+    }
 
+    pub fn get_class_from_tile(&self, handle: &WaveFunctionTileHandle) -> Option<WaveFunctionTileClassHandle> {
+        match self.tiles.get(handle.0) {
+            Some(tile) => Some(tile.class_id),
+            None => None,
+        }
+    }
 
-}
-
-pub struct WaveFunctionField {
 
 }

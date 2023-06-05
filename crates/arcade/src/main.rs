@@ -107,7 +107,7 @@ mod arcade {
     use atlas::TextureAtlas;
     use macroquad::prelude::{Vec2, WHITE};
 
-    use crate::infinite_grid::InfiniteGrid;
+    use utilities::infinite_grid::InfiniteGrid;
 
     const DEG_TO_RAD: f32 = 3.14159 / 180.;
     const ROT_90: f32 = 90. * DEG_TO_RAD;
@@ -326,47 +326,6 @@ mod arcade {
             ]));
 
             Arcade { sectors }
-        }
-    }
-
-}
-
-mod infinite_grid {
-    use std::{collections::HashMap};
-
-
-    pub struct InfiniteGrid<T> {
-        map: HashMap<u64, T>,
-    }
-
-    impl<T> InfiniteGrid<T> {
-        pub fn new() -> Self {
-            InfiniteGrid::<T> {
-                map: HashMap::new(),
-            }
-        }
-
-        pub fn get(&self, x: i32, y: i32) -> Option<&T> {
-            let hash = Self::to_hash(x, y);
-            self.map.get(&hash)
-        }
-
-        pub fn set(&mut self, x: i32, y: i32, value: T) {
-            let hash = Self::to_hash(x, y);
-            self.map.insert(hash, value);
-        }
-
-        pub fn to_hash(x: i32, y:i32) -> u64 {
-            let ux: u64 = x as u64;
-            let uy: u64 = y as u64;
-            let sy = uy << 32;
-            ux.wrapping_add(sy)
-        }
-
-        pub fn from_hash(hash: u64) -> (i32, i32) {
-            let ux = hash as u32;
-            let uy = (hash >> 32) as u32;
-            (ux as i32, uy as i32)
         }
     }
 
