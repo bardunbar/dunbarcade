@@ -21,7 +21,14 @@ const DEBUG_SCREEN_SCALE: i32 = 1;
 const WINDOW_WIDTH: i32 = WIDTH * DEBUG_SCREEN_SCALE;
 const WINDOW_HEIGHT: i32 = HEIGHT * DEBUG_SCREEN_SCALE;
 
-
+#[cfg(debug_assertions)]
+fn should_exit() -> bool {
+    is_quit_requested() || is_key_down(KeyCode::Escape)
+}
+#[cfg(not(debug_assertions))]
+fn should_exit() -> bool {
+    false
+}
 
 fn window_conf() -> Conf {
     Conf {
@@ -33,10 +40,15 @@ fn window_conf() -> Conf {
     }
 }
 
+// Beige: e3e1c9
+
 #[macroquad::main(window_conf)]
+
 async fn main() {
 
     let cabinet_layer = CameraLayer::new(WIDTH as f32, HEIGHT as f32);
+    let mut cabinet = Cabinet::new().await;
+
     // Offset the camera so that the target is in the center of the viewport
     let mut arcade_layer = CameraLayer::new_with_offset(WIDTH as f32, HEIGHT as f32, Vec2::new(1.0, 1.0));
 
@@ -50,7 +62,6 @@ async fn main() {
         volume: 1.0,
     });
 
-    let mut cabinet = Cabinet::new().await;
 
     let arcade = Arcade::new();
 
@@ -104,7 +115,7 @@ async fn main() {
         arcade_layer.draw();
         cabinet_layer.draw();
 
-        if is_quit_requested() || is_key_down(KeyCode::Escape) {
+        if should_exit() {
             break;
         }
 
