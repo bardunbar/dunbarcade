@@ -84,7 +84,7 @@ impl WaveFunctionSector {
             cells.push(WaveFunctionCell::new_empty(tileset));
         }
 
-        WaveFunctionSector {
+    WaveFunctionSector {
             // width,
             // height,
             cells,
