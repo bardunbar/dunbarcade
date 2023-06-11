@@ -1,4 +1,4 @@
-use std::{collections::{HashMap, HashSet, hash_map::Entry}, hash::Hash};
+use std::{collections::{HashMap, HashSet}, hash::Hash};
 
 use macroquad::prelude::load_string;
 use nanoserde::DeJson;
@@ -68,6 +68,12 @@ pub struct WaveFunctionTile {
     rotation: u32,
     class_id: WaveFunctionTileClassHandle,
 }
+
+// impl WaveFunctionTile {
+//     pub fn get_render_data(&self) -> (&str, f32) {
+//         ()
+//     }
+// }
 
 pub struct WaveFunctionTileset {
     tile_id_map: Vec<String>,
@@ -299,5 +305,12 @@ impl WaveFunctionTileset {
         }
     }
 
+    pub fn get_render_data(&self, handle: &WaveFunctionTileHandle) -> Option<(&str, f32)> {
+        if let Some(data) = self.tiles.get(handle.0) {
+            Some((&self.texture_id_map[data.texture_id.0], data.rotation as f32 * 90.0))
+        } else {
+            None
+        }
+    }
 
 }

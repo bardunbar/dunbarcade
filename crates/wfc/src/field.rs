@@ -57,17 +57,48 @@ impl WaveFunctionCell {
             panic!("Unable to collapse to a tile! Selected Weight: {:?}, States: {:?}", selected_weight, collapse_selector);
         }
     }
+
+    pub fn get_tile_data(&self) -> Option<WaveFunctionTileHandle> {
+        if self.get_entropy() == 1 {
+            self.states.iter().next().cloned()
+        } else {
+            None
+        }
+    }
 }
 
 pub struct WaveFunctionSector {
-    width: usize,
-    height: usize,
+    // width: usize,
+    // height: usize,
 
     cells: Vec<WaveFunctionCell>,
 }
 
+impl WaveFunctionSector {
+    fn new(tileset: &WaveFunctionTileset, width: usize, height: usize) -> Self {
+
+        let cell_count = width * height;
+        let mut cells = Vec::with_capacity(cell_count);
+
+        for _ in 0..cell_count {
+            cells.push(WaveFunctionCell::new_empty(tileset));
+        }
+
+        WaveFunctionSector {
+            // width,
+            // height,
+            cells,
+        }
+    }
+}
+
+
+
 pub struct WaveFunctionField {
     sectors: InfiniteGrid<WaveFunctionSector>,
+    sector_width: usize,
+    sector_height: usize,
+
     tileset: WaveFunctionTileset,
 }
 
@@ -75,6 +106,8 @@ impl WaveFunctionField {
     pub fn new(tileset: WaveFunctionTileset) -> Self {
         WaveFunctionField {
             sectors: InfiniteGrid::new(),
+            sector_width: 16,
+            sector_height: 16,
             tileset,
         }
     }
@@ -87,4 +120,26 @@ impl WaveFunctionField {
             }
         }
     }
+
+    pub fn add_sector(&mut self, x: i32, y: i32) {
+        if let None = self.sectors.get(x, y) {
+            self.sectors.set(x, y, WaveFunctionSector::new(&self.tileset, self.sector_width, self.sector_height));
+        } else {
+            // Some error condition!
+            panic!("Attempting to add sector to occupied location ({:?},{:?})!", x, y);
+        }
+    }
+
+    pub fn get_cell_render_data(&self, f: &dyn Fn((&str, f32))) {
+        if let Some(sector) = self.sectors.get(0, 0) {
+            for cell in sector.cells.iter() {
+                if let Some(data) = cell.get_tile_data() {
+                    if let Some(render_data) = self.tileset.get_render_data(&data) {
+                        f(render_data);
+                    }
+                }
+            }
+        }
+    }
 }
+

@@ -3,6 +3,8 @@
         "smartupdate"
     ],
     "rust-analyzer.linkedProjects": [
-        ".\\crates\\wfc\\Cargo.toml"
+        ".\\crates\\wfc\\Cargo.toml",
+        ".\\crates\\arcade\\Cargo.toml",
+        ".\\crates\\arcade\\Cargo.toml"
     ]
 }

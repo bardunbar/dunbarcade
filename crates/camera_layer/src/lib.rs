@@ -24,14 +24,17 @@ pub struct CameraLayer {
 
 impl CameraLayer {
     pub fn new(width: f32, height: f32) -> Self {
+        Self::new_with_offset(width, height, Vec2::ZERO)
+    }
+
+    pub fn new_with_offset(width: f32, height: f32, offset: Vec2) -> Self {
         let mut camera = Camera2D::from_display_rect(Rect::new(0.0, 0.0, width, height));
 
         let render_target = render_target(width as u32, height as u32);
         render_target.texture.set_filter(FilterMode::Nearest);
         camera.render_target = Some(render_target);
 
-        // Offset the camera so that the target is in the center of the viewport
-        camera.offset = Vec2::new(1.0, 1.0);
+        camera.offset = offset;
 
         // Flip Vertically? Apparently fixes a bug
         camera.zoom.y = -camera.zoom.y;
