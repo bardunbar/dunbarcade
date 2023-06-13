@@ -8,7 +8,27 @@ use atlas::TextureAtlas;
 use camera_layer::CameraLayer;
 use player::Player;
 
-use macroquad::{window::{Conf, next_frame, clear_background}, prelude::{is_quit_requested, set_default_camera, set_camera, is_key_down, KeyCode, Vec2, BLACK}, audio::{load_sound, play_sound, PlaySoundParams}};
+use macroquad::{
+    window::{
+        Conf, 
+        next_frame, 
+        clear_background
+    }, 
+    prelude::{
+        is_quit_requested, 
+        set_default_camera, 
+        set_camera, 
+        is_key_down, 
+        KeyCode, 
+        Vec2, 
+        BLACK
+    }, 
+    audio::{
+        load_sound, 
+        play_sound, 
+        PlaySoundParams
+    }
+};
 
 const WIDTH: i32 = 480;
 const HEIGHT: i32 = 640;
